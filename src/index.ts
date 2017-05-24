@@ -6,44 +6,44 @@ Multimethod; // TODO: temp testing...
 
 
 
-export async function validate(ruleset: string, options: BoomgateOptions) {
-    let ast = parse(ruleset);
-    await Promise.all(ast.map(async rule => { // TODO: await!!!
+// export async function validate(ruleset: string, options: BoomgateOptions) {
+//     let ast = parse(ruleset);
+//     await Promise.all(ast.map(async rule => { // TODO: await!!!
 
-        if (options.checkRole) {
-            const checkRole = options.checkRole;
-            let roles = rule.roles;
+//         if (options.checkRole) {
+//             const checkRole = options.checkRole;
+//             let roles = rule.roles;
 
-            await Promise.all(roles.map(async role => {
-                let type = await checkRole(role);
-                let isRole = options.isRole ? await options.isRole(role) : '?';
+//             await Promise.all(roles.map(async role => {
+//                 let type = await checkRole(role);
+//                 let isRole = options.isRole ? await options.isRole(role) : '?';
 
-                if (isUser === true && isRole !== true) return 'user';
-                if (isRole === true && isUser !== true) return 'role';
-
-
-
-            }));
+//                 if (isUser === true && isRole !== true) return 'user';
+//                 if (isRole === true && isUser !== true) return 'role';
 
 
 
-        }
+//             }));
 
-        // Valid `roles` value may be any of:
-        // 1. empty array
-        // 2. single element which is a user and not a role
-        // 3. 1-M elements where every element is a role and not a user
 
-        // also: no duplicates!
-    }));
-}
+
+//         }
+
+//         // Valid `roles` value may be any of:
+//         // 1. empty array
+//         // 2. single element which is a user and not a role
+//         // 3. 1-M elements where every element is a role and not a user
+
+//         // also: no duplicates!
+//     }));
+// }
 
 
 
 
 
 export function validateOptions(options: BoomgateOptions) {
-
+    options
     // Must specify either BOTH or NEITHER of isUser and isRole    
 }
 
