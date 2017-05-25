@@ -1,26 +1,29 @@
+// Start rule
 RuleSet
-=   WS?   head:Rule   tail:(WS?   Rule)*   WS?   EOF
-    { return head.concat(tail.map(el => el[1])); }
+=   WS?   head:CompoundRule   tail:(WS?   CompoundRule)*   WS?   EOF
+    { return [].concat.apply([], head.concat(tail.map(el => el[1]))); }
 
-Rule
-=   droles:DisjunctRoles   SPC   allow:(CAN/CANNOT)   SPC   deeds:DeedPredicate   // TODO: iff Policy
-    { return droles.map(roles => ({ roles, deeds, allow: allow === 'can' })); }
+// Non-terminals
+CompoundRule
+=   cmasks:ClearanceMaskList   SPC   policy:(CAN/CANNOT)   SPC   intentionMask:IntentionMask   // TODO: iff Policy
+    { return cmasks.map(clearanceMask => ({ clearanceMask, intentionMask, allow: policy === 'can' })); }
 
-DisjunctRoles
-=   head:ConjunctRoles   tail:(SPC   AND   SPC   ConjunctRoles)*
+ClearanceMaskList
+=   head:ClearanceMask   tail:(SPC   AND   SPC   ClearanceMask)*
     { return [head].concat(tail.map(el => el[3])); }
 
-ConjunctRoles
-=   head:Role   tail:(SPC   Role)*
-    { return [head].concat(tail.map(el => el[1])).sort(); }
+ClearanceMask
+=   head:Clearance   tail:(SPC   Clearance)*
+    { return '*\\[' + [head].concat(tail.map(el => el[1])).sort().join('\\]*\\[') + '\\]*'; }
 
-Role
+Clearance
 =   IDENTIFIER
 
-DeedPredicate
-=   DQ   text:[^"\n\r]*   DQ
-    { return text.join(''); }
+IntentionMask
+=   DQ   (!DQ !NL .)*   DQ
+    { return text().slice(1, -1); }
 
+// Terminals
 AND         = 'and'   !IDCHAR
 CAN         = 'can'   !IDCHAR   { return 'can'; }
 CANNOT      = 'cannot'   !IDCHAR   { return 'cannot'; }
@@ -31,7 +34,6 @@ IDCHAR      = [a-zA-Z0-9._-]
 KEYWORD     = AND / CAN / CANNOT
 NL          = [\r\n]+
 SPC         = [ \t]+
-
 WS          = (SPC / NL / WS_SCOMMENT / WS_MCOMMENT)+
 WS_MCOMMENT    = '/*'   (!'*/' .)*   '*/'
 WS_SCOMMENT    = '//'   (!NL !EOF .)*

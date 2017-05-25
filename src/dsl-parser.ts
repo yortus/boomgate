@@ -32,7 +32,7 @@ export default function parse(source: string): RulesetAST {
 
 /** Information associated with a successfully parsed ruleset. */
 export type RulesetAST = Array<{
-    roles: string[];
-    deeds: string;
-    allow: boolean;
+    clearanceMask: string;
+    intentionMask: string;
+    allow: boolean; // TODO: boolean for now; allow for policy function in future
 }>;

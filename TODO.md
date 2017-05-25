@@ -100,43 +100,9 @@ Args        :=  IDENTIFIER (WS ',' WS Args)?
 
 
 
-# Terminology
+# Terminology Ideas
 - subject, WHO, user, agent, role, actor, accessor, trustee, applicant, seeker, claimant, identity
 - operation, WHAT, verb, method, action, intent, task, work, deed, feat, step, move, plan, area
 - object, WHERE, resource, area, securable, context, asset
 - policy, rights, permissions, access, capability
-
-
-
-
-```
-// ==================== PEGJS GRAMMAR ====================
-Start
-=   subject:Subject   WS   operation:Operation   WS?   '==>'   WS?   policy:Policy
-    { return { subject, operation, policy }; }
-
-Subject
-=   '@all'   { return '*'; }
-/   '@'   id:IDENTIFIER   { return id; }
-
-Operation
-=   type:(OperationType   WS)?   resource:Resource
-    { return { type: type ? type[0] : '*', resource }; }
-
-OperationType
-=   'GET'   { return 'get'; }
-/   'POST'   { return 'post'; }
-
-Resource
-=   '/'   (!WS   .)*
-    { return text(); }
-
-Policy
-=    'allow'
-/    'deny'
-// TODO: function(...args)
-
-IDENTIFIER = [a-zA-Z]   [a-zA-Z0-9_-]*   { return text(); }
-WS = [ \t]+
-```
 
